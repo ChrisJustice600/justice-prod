@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import { Play, Users2, Trophy, ArrowRight, Music2, Globe, Award, Star, Instagram, Twitter, Linkedin, Disc, Mic2, Headphones, Calendar, MapPin } from "lucide-react";
+import { Play, Users2, Trophy, ArrowRight, Music2, Globe, Award, Star, Instagram, Twitter, Linkedin, Disc, Mic2, Headphones, Calendar, MapPin, Ticket, Clock } from "lucide-react";
 import Link from "next/link";
 import { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -213,6 +213,66 @@ export default function Home() {
     }
   ];
 
+
+  const featuredEvent = {
+    title: "SOFAPALOOZA 2024",
+    date: "JULY 20, 2024",
+    location: "STADE DE FRANCE, PARIS",
+    image: "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?ixlib=rb-1.2.1&auto=format&fit=crop&q=80&w=1974",
+    artists: [
+      { name: "NOVA", image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?ixlib=rb-1.2.1&auto=format&fit=crop&q=80&w=2070" },
+      { name: "LUNA", image: "https://images.unsplash.com/photo-1519682577862-22b62b24e493?ixlib=rb-1.2.1&auto=format&fit=crop&q=80&w=2070" },
+      { name: "THE GROOVE", image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-1.2.1&auto=format&fit=crop&q=80&w=2070" },
+      { name: "+15 SPECIAL GUESTS", image: "" }
+    ],
+    targetDate: new Date("2024-07-20T20:00:00")
+  };
+
+  const CountdownTimer = ({ targetDate }: { targetDate: Date }) => {
+    const [timeLeft, setTimeLeft] = useState({
+      days: 0,
+      hours: 0,
+      minutes: 0,
+      seconds: 0
+    });
+  
+    useEffect(() => {
+      const interval = setInterval(() => {
+        const now = new Date();
+        const difference = targetDate.getTime() - now.getTime();
+  
+        if (difference <= 0) {
+          clearInterval(interval);
+          return;
+        }
+  
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+  
+        setTimeLeft({ days, hours, minutes, seconds });
+      }, 1000);
+  
+      return () => clearInterval(interval);
+    }, [targetDate]);
+  
+    return (
+      <div className="flex gap-4 md:gap-8">
+        {Object.entries(timeLeft).map(([unit, value]) => (
+          <div key={unit} className="text-center">
+            <div className="text-4xl md:text-6xl font-black bg-gradient-to-b from-amber-500 to-amber-600 bg-clip-text text-transparent">
+              {value.toString().padStart(2, '0')}
+            </div>
+            <div className="text-sm md:text-base uppercase tracking-wider text-white/60">
+              {unit}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <main className="relative bg-black text-white overflow-hidden" ref={containerRef}>
       {/* Noise overlay */}
@@ -301,6 +361,160 @@ export default function Home() {
               <span key={i} className="whitespace-nowrap mx-8">
                 {item}
               </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+         {/* Featured Event Section - SOFAPALOOZA 2024 */}
+         <section id="featured-event" className="relative min-h-screen py-32 overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img
+            src={featuredEvent.image}
+            alt={featuredEvent.title}
+            className="absolute inset-0 w-full h-full object-cover opacity-30"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/50 to-black/90" />
+        </div>
+
+        <div className="relative z-10 container mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-20"
+          >
+            <h2 className="text-4xl md:text-6xl font-black mb-6">
+              <span className="text-white">FEATURED</span>
+              <span className="text-amber-500"> EVENT</span>
+            </h2>
+            <div className="w-24 h-1 bg-amber-500 mx-auto mb-8" />
+          </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+            >
+              <div className="mb-12">
+                <h3 className="text-5xl md:text-7xl font-black mb-6 text-amber-500">{featuredEvent.title}</h3>
+                <div className="flex items-center gap-4 text-xl mb-6">
+                  <Calendar className="w-6 h-6 text-amber-500" />
+                  <span>{featuredEvent.date}</span>
+                </div>
+                <div className="flex items-center gap-4 text-xl mb-8">
+                  <MapPin className="w-6 h-6 text-amber-500" />
+                  <span>{featuredEvent.location}</span>
+                </div>
+                <p className="text-xl text-white/80 mb-12 leading-relaxed">
+                  The most anticipated music festival of the year featuring our entire roster plus special guests. An unforgettable night of music, art, and immersive experiences.
+                </p>
+              </div>
+
+              <div className="mb-16">
+                <h4 className="text-2xl font-bold mb-6">COUNTDOWN TO EVENT</h4>
+                <CountdownTimer targetDate={featuredEvent.targetDate} />
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <button className="px-8 py-4 bg-amber-500 text-black rounded-full font-bold text-lg hover:bg-amber-600 transition-colors flex items-center gap-2 justify-center">
+                  <Ticket className="w-5 h-5" />
+                  GET TICKETS
+                </button>
+                <button className="px-8 py-4 border-2 border-white rounded-full font-bold text-lg hover:bg-white hover:text-black transition-colors flex items-center gap-2 justify-center">
+                  <Clock className="w-5 h-5" />
+                  FULL LINEUP
+                </button>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="relative"
+            >
+              <div className="grid grid-cols-2 gap-4">
+                {featuredEvent.artists.map((artist, index) => (
+                  <motion.div
+                    key={index}
+                    whileHover={{ y: -10 }}
+                    className={`relative rounded-xl overflow-hidden ${index === 3 ? "bg-gradient-to-br from-purple-500/20 to-amber-500/20 p-8 flex items-center justify-center" : "aspect-square"}`}
+                  >
+                    {artist.image ? (
+                      <>
+                        <img
+                          src={artist.image}
+                          alt={artist.name}
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                        <div className="absolute inset-0 p-4 flex flex-col justify-end">
+                          <h4 className="text-xl font-bold">{artist.name}</h4>
+                        </div>
+                      </>
+                    ) : (
+                      <h4 className="text-xl font-bold text-center">{artist.name}</h4>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Event Highlights */}
+        <div className="relative z-10 container mx-auto px-6 mt-32">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h3 className="text-3xl font-black mb-6">
+              <span className="text-white">EVENT</span>
+              <span className="text-amber-500"> HIGHLIGHTS</span>
+            </h3>
+            <div className="w-16 h-1 bg-amber-500 mx-auto mb-8" />
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: <Music2 className="w-8 h-8" />,
+                title: "3 STAGES",
+                description: "Main stage, electronic tent, and intimate acoustic lounge"
+              },
+              {
+                icon: <Disc className="w-8 h-8" />,
+                title: "SPECIAL COLLAB",
+                description: "Exclusive live performances you won't see anywhere else"
+              },
+              {
+                icon: <Award className="w-8 h-8" />,
+                title: "VIP EXPERIENCE",
+                description: "Premium viewing areas, private bars, and artist meet & greets"
+              }
+            ].map((highlight, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="bg-gradient-to-b from-white/5 to-white/0 rounded-2xl p-8 border border-white/10 hover:border-amber-500/30 transition-all duration-300"
+              >
+                <div className="w-16 h-16 rounded-full bg-amber-500/10 flex items-center justify-center mb-6 text-amber-500">
+                  {highlight.icon}
+                </div>
+                <h4 className="text-2xl font-bold mb-4">{highlight.title}</h4>
+                <p className="text-white/70">{highlight.description}</p>
+              </motion.div>
             ))}
           </div>
         </div>
